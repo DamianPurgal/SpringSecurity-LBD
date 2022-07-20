@@ -2,6 +2,7 @@ package lbd.fissst.securitylbd.security.configuration;
 
 import io.jsonwebtoken.security.Keys;
 import lbd.fissst.securitylbd.security.filter.JwtAuthenticationFilter;
+import lbd.fissst.securitylbd.security.filter.JwtAuthorizationFilter;
 import lbd.fissst.securitylbd.service.implementation.AppUserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtConfiguration, secretKey))
+                .addFilterAfter(new JwtAuthorizationFilter(jwtConfiguration, secretKey), JwtAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/user").permitAll()
                 .antMatchers(HttpMethod.GET, "/login").permitAll()
