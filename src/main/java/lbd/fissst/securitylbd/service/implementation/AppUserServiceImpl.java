@@ -9,18 +9,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class AppUserServiceImpl implements UserDetailsService {
 
-    private final List<UserDetails> users;
-
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
-    private void addUsersToList(){
+    private List<UserDetails> getUsers(){
+        List<UserDetails> users = new ArrayList<>();
+
         users.add(
                 User.builder()
                         .username("admin")
@@ -35,11 +36,12 @@ public class AppUserServiceImpl implements UserDetailsService {
                         .roles("USER")
                         .build()
         );
+        return users;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return users.stream()
+        return  getUsers().stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(() ->
