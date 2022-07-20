@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public String getAdmin(){
         return "This is admin!";
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public String createUser(){
         return "User created!";
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public String deleteUser(){
         return "User deleted!";
     }
