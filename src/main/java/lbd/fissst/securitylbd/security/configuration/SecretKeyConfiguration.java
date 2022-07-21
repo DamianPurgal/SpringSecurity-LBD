@@ -14,7 +14,14 @@ public class SecretKeyConfiguration {
     private JwtConfiguration jwtConfiguration;
 
     @Bean
-    public SecretKey secretKey() {
-        return Keys.hmacShaKeyFor(jwtConfiguration.getSecretKey().getBytes());
+    public SecretKey secretKeyAccessToken() {
+        return Keys.hmacShaKeyFor(jwtConfiguration.getSecretKeyAccessToken().getBytes());
     }
+
+    @Bean
+    public SecretKey secretKeyRefreshToken(){
+        return Keys.hmacShaKeyFor(jwtConfiguration.getSecretKeyRefreshToken().getBytes());
+    }
+
+
 }

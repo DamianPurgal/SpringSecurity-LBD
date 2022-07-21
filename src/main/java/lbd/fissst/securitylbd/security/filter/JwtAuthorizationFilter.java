@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtConfiguration jwtConfiguration;
-    private final SecretKey secretKey;
+    private final SecretKey secretKeyAccessToken;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
 
             Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(secretKeyAccessToken)
                     .parseClaimsJws(token);
 
             Claims body = claimsJws.getBody();

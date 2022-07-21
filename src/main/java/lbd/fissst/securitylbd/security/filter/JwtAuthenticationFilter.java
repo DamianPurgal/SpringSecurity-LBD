@@ -30,7 +30,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtConfiguration jwtConfiguration;
-    private final SecretKey secretKey;
+    private final SecretKey secretKeyAccessToken;
+    private final SecretKey secretKeyRefreshToken;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -55,20 +56,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        String token = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
-                .signWith(secretKey)
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getAccessTokenExpirationAfterDays())))
+                .signWith(secretKeyAccessToken)
+                .compact();
+
+        String refreshToken = Jwts.builder()
+                .setSubject(authResult.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getRefreshTokenExpirationAfterDays())))
+                .signWith(secretKeyRefreshToken)
                 .compact();
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),
                 new AuthenticationResponse(
-                        token,
-                        token
+                        accessToken,
+                        refreshToken
                 )
         );
     }
