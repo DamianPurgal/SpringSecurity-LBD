@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lbd.fissst.securitylbd.DTO.AuthenticationResponse;
 import lbd.fissst.securitylbd.DTO.RefreshJWTRequest;
 import lbd.fissst.securitylbd.security.configuration.JwtConfiguration;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +48,8 @@ public class SecurityController {
     }
 
     @PostMapping("/refreshToken")
+    @Operation(summary = "Refresh JWT", description = "Refresh JWT")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<AuthenticationResponse> refreshJWT(@RequestBody RefreshJWTRequest request){
 
         try{
